@@ -1,0 +1,42 @@
+version: '3.9'
+
+services:
+  nestapp:
+    container_name: profiles
+    image: profiles:1.0.0
+    build: .
+    ports:
+      - 3000:3000
+    environment:
+      - DB_TYPE=postgres
+      - PG_HOST=db2
+      - PG_USERNAME=postgres
+      - PG_PASSWORD=postgres
+      - PG_DATABASE=JS_profiles
+      - PG_PORT=5432
+    depends_on:
+      - db2
+      - rabbitmq
+  db2:
+    container_name: db2
+    image: postgres:12
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=JS_profiles
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:3.9
+    ports:
+      - 5672:5672
+      - 15672:15672
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+
+volumes:
+  pgdata: {}
